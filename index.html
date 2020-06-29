@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <!-- handlebars -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Moment js -->
     <script src="https://momentjs.com/downloads/moment.js"></script>
     <title>ajax-ex-calendar</title>
@@ -13,21 +17,18 @@
 
 <body>
 
-    <div class="wrap">
-        <h2>Gennaio 2018</h2>
+  <!-- template clonato -->
+  <div class="container">
 
-        <a href="#"><--Precedente</a>
+  </div>
 
-        <a href="#">Successivo--></a>
+  <!-- template da clonare -->
+  <script id="entry-template" type="text/x-handlebars-template">
+    <div class="da-clonare">
+      {{month}}
     </div>
+  </script> 
 
-
-
-
-
-
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Javascript -->
     <script src="js/script.js"></script>
 </body>
