@@ -16,17 +16,31 @@
 
 $(document).ready(function() {
 
-  // var day = moment('2020-05-06');
 
-  // console.log(day);
-
-  // console.log(day.format('dddd Do MMMM YYYY'));
-  // console.log(day.daysInMonth());
-
-
-  var now = moment('1983-08-22');
   
-  now.add(10, 'years');
-  console.log(now.format('dddd'));
+
+
+  var gennaioArray = ['2018-01-01', '2018-01-02', '2018-01-03'];
+
+
+  for (var i = 0; i < gennaioArray.length; i++) {
+
+    var currentDay = gennaioArray[i];
+
+
+    console.log(currentDay);
+  }
+
+  // var day = moment('2018-01-01').format('dddd Do MMMM YYYY');
+
+  var day = moment('2018-01-01');
+  console.log(day);
+
+  var day2 = day.add('2', 'days');
+
+  console.log(day2);
+
 
 });  
+
+

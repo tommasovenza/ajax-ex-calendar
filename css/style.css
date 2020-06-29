@@ -3,3 +3,18 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+a {
+    padding: 0 20px;
+    text-decoration: none;
+}
+
+h2 {
+    margin-left: 60px;
+}
+
+.wrap {
+    width: 300px;
+    border: 1px solid red;
+    margin: 0 auto;
+}
