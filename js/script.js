@@ -19,46 +19,160 @@
 
 $(document).ready(function () {
 
-  // // handlebars setup
-  var source = $('#entry-template').html();
 
-  // compilo il template che mi sono preso con handlebars
-  var template = Handlebars.compile(source);
-
-  // Oggetto che si chiama
-  // parametri da passare alla funzione template compilata da handlebar per generare html
-  // in questa variabile da passare poi alla funzione ci va sempre un oggetto.
-  // per generare html con handlebars ci vuole sempre un oggetto!!!!
-
-  // --> APPUNTI <-- var mese = moment('2018-01-01').daysInMonth();
+  // funzione che al click scorre i mesi
+  $('.next').click(function () {
 
 
-  var giornoIniziale = moment('2018-01-01');
+    var meseCorrente = $('#mese-corrente').attr('data-mese-corrente');
 
-  var giorniMeseCorrente = giornoIniziale.daysInMonth();
+    var momentMeseCorrente = moment(meseCorrente);
+    var meseSuccessivo = momentMeseCorrente.add(1, 'months');
 
-  for (var counter = 0; counter < giorniMeseCorrente; counter++) {
+    if (meseSuccessivo.year() === 2018) {
 
-    var giornoCorrente = moment(giornoIniziale);
+      generaMese(momentMeseCorrente);
+      festivita(momentMeseCorrente);
 
-    giornoIniziale.add(counter, 'days');
+    } else {
+      alert('puoi scorrere solo nei mesi del 2018');
+    }
 
-    var nomeGiornoDellaSettimana = giornoCorrente.format('dddd');
+  });
+
+  // funzione che al click scorre i mesi
+  $('.prev').click(function () {
+
+    var meseCorrente = $('#mese-corrente').attr('data-mese-corrente');
+
+    var momentMeseCorrente = moment(meseCorrente);
+    var mesePrecedente = momentMeseCorrente.subtract(1, 'months');
+
+    if (mesePrecedente.year() === 2018) {
+
+      generaMese(momentMeseCorrente);
+      festivita(momentMeseCorrente);
+
+    } else {
+      alert('puoi scorrere solo nei mesi del 2018');
+    }
+
+  });
+  
+  // oggetto da passare nelle funzioni 
+  // --> restituisce il primo giorno del mese di gennaio
+
+  // var prova = moment('2018-01-01');
+  // console.log(prova);
+
+  var dataMeseCorrente = moment({
+    days: 01,
+    month: 00,
+    years: 2018
+  });
+
+  generaMese(dataMeseCorrente);
+  festivita(dataMeseCorrente);
+  console.log(dataMeseCorrente);
+
+
+}); // end document ready
+
+function generaMese(giornoDaImmettere) {
+
+  $('#lista-giorni').html('');
+  $('#mese-corrente').html('');
+
+
+  // inizializziamo una variabile in cui cambiamo il formato 
+  var nomeMese = giornoDaImmettere.format('MMMM YYYY');
+
+  // Handlebars
+  var htmlTemplate = $('#mese-template').html();
+  var template = Handlebars.compile(htmlTemplate);
+
+  var context = {
+    month: nomeMese
+  };
+
+  $('#mese-corrente').append(template(context));
+
+  $('#mese-corrente').attr('data-mese-corrente', giornoDaImmettere.format('YYYY-MM-DD'));
+
+
+
+  htmlTemplate = $('#giorni-template').html();
+  template = Handlebars.compile(htmlTemplate);
+
+  // calcolo il numero di giorni per ogni mese
+  var giorniMeseCorrente = giornoDaImmettere.daysInMonth();
+
+  // ciclo for
+  for (var i = 0; i < giorniMeseCorrente; i++) {
+
+    var giornoCorrente = moment(giornoDaImmettere);
+
+    giornoCorrente.add(i, 'days');
+
     var giornoNumeroMese = giornoCorrente.format('D');
-    var dataCompleta = giornoCorrente.format('YYYY');
+    var dataCompleta = giornoCorrente.format('YYYY-MM-DD');
+    var mese = giornoCorrente.format('MMMM');
 
-    // l'oggetto può avere le virgolette come no. il valore però deve avere sempre le virgolette
-    var parametri = {
+    context = {
       date: giornoNumeroMese,
-      name: nomeGiornoDellaSettimana,
-      complete_date: dataCompleta
+      name: mese,
+      data_completa: dataCompleta
     };
+
+    $('#lista-giorni').append(template(context));
+
+
   }
-  // genera il template con i parametri passati
-  var htmlGenerato = template(parametri);
 
-  // lo metto nell'html
-  $('.container').append(htmlGenerato);
+} // fine funzione generaMese
 
 
-});
+
+function festivita(feste) {
+
+  // chiamata ajax
+  $.ajax({
+
+    // url api
+    url: "https://flynn.boolean.careers/exercises/api/holidays?year=2018&month=0",
+    method: "GET",
+
+    data: {
+      year: feste.year(),
+      month: feste.month()
+    },
+
+    success: function (data) {
+
+      console.log(data.response);
+
+      if (data.success === true) {
+
+        var vacanze = data.response;
+
+        for (var i = 0; i < vacanze.length; i++) {
+
+          var vacanzaCorrente = vacanze[i];
+
+          var thisDataElem = $('[data-date = " ' + vacanzaCorrente.date + ' "]');
+
+          thisDataElem.addClass('red');
+
+          thisDataElem.append(' - ' + vacanzaCorrente.name);
+        }
+      }
+
+    },
+
+    error: function () {
+      alert('qualcosa non va');
+    }
+  });
+
+
+}

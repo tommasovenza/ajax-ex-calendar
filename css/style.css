@@ -4,17 +4,14 @@
     box-sizing: border-box;
 }
 
-a {
-    padding: 0 20px;
-    text-decoration: none;
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-h2 {
-    margin-left: 60px;
+.red {
+    color: red;
 }
 
-.wrap {
-    width: 300px;
-    border: 1px solid red;
-    margin: 0 auto;
-}

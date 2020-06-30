@@ -12,7 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Moment js -->
     <script src="https://momentjs.com/downloads/moment.js"></script>
-    <title>ajax-ex-calendar</title>
+    <title>Calendar</title>
 </head>
 
 <body>
@@ -20,13 +20,40 @@
   <!-- template clonato -->
   <div class="container">
 
+      <div class="prev">
+        <-- prev
+      </div>
+      
+      <h3 data-mese-corrente="" id="mese-corrente"></h3>
+
+      <div class="next">
+        next -->
+      </div>
+
+      <!-- lista giorni da appendere -->
+      <ul id="lista-giorni">
+
+      </ul>
+
   </div>
 
+
+
+  <script id="mese-template" type="text/x-handlebars-template">
+
+    <h3> {{ month }} </h3>
+
+  </script>
+
   <!-- template da clonare -->
-  <script id="entry-template" type="text/x-handlebars-template">
-    <div class="da-clonare">
-      {{month}}
-    </div>
+  <script id="giorni-template" type="text/x-handlebars-template">
+
+        <!-- template che si va riprodurre  -->
+        <!-- attributo da verificare per le festività -  "data completa" avrà formato uguale ad APIboolean -->
+        <li data-date=" {{ data_completa }} "> 
+          <span> {{ date }} </span>
+          <span> {{ name }} </span>  
+        </li>
   </script> 
 
     <!-- Javascript -->
