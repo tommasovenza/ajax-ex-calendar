@@ -1,17 +1,30 @@
-* { 
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+a {
+    text-decoration: none;
 }
 
-.red {
+ul li {
+    list-style-type: none;
+    margin: 3px 0;
+}
+
+.holiday {
     color: red;
 }
+
+.anchor {
+    display: flex;
+    justify-content: space-around;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+}
+
 

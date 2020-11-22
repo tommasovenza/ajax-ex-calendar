@@ -1,178 +1,134 @@
-// Creare un calendario dinamico con le festività. 
-// Partiamo dal gennaio 2018 dando la possibilità di cambiare mese, 
-// gestendo il caso in cui l’API non possa ritornare festività. 
-// Il calendario partirà da gennaio 2018 e si concluderà a dicembre 2018 
-// (unici dati disponibili sull’API).
+$(document).ready(function() {
 
-// Sarà indispensabile sia per la parte obbligatoria, che per quella facoltativa, 
-// l’utilizzo di momentjs e 
-// dell’API holiday https://flynn.boolean.careers/exercises/api/holidays?year=2018&month=0
-// Link al documento con le specifiche: 
-// https://docs.google.com/document/d/1OcSGrT3Snh_DXrDZ82DVY59eqvzNb_Nh_Db5z3qq2_k/edit
-
-// Consigli:
-// 	1- Facciamo prima il mese di gennaio lasciandoci le parti opzionali per la fine
-// 	2- Andiamo avanti passo passo, sfruttando la documentazione di momentjs 
-// per capire se e come momentjs può aiutarmi a risolvere un determinato problema.
-// Analizzare inoltre, prima di scrivere codice, l’API delle festività
-// Buon lavoro!
-
-$(document).ready(function () {
-
-
-  // funzione che al click scorre i mesi
-  $('.next').click(function () {
-
-
-    var meseCorrente = $('#mese-corrente').attr('data-mese-corrente');
-
-    var momentMeseCorrente = moment(meseCorrente);
-    var meseSuccessivo = momentMeseCorrente.add(1, 'months');
-
-    if (meseSuccessivo.year() === 2018) {
-
-      generaMese(momentMeseCorrente);
-      festivita(momentMeseCorrente);
-
-    } else {
-      alert('puoi scorrere solo nei mesi del 2018');
-    }
-
+  var baseDate = moment({
+      day : 1,
+      month: 0,
+      year: 2018
   });
 
-  // funzione che al click scorre i mesi
-  $('.prev').click(function () {
-
-    var meseCorrente = $('#mese-corrente').attr('data-mese-corrente');
-
-    var momentMeseCorrente = moment(meseCorrente);
-    var mesePrecedente = momentMeseCorrente.subtract(1, 'months');
-
-    if (mesePrecedente.year() === 2018) {
-
-      generaMese(momentMeseCorrente);
-      festivita(momentMeseCorrente);
-
-    } else {
-      alert('puoi scorrere solo nei mesi del 2018');
-    }
-
-  });
-  
-  // oggetto da passare nelle funzioni 
-  // --> restituisce il primo giorno del mese di gennaio
-
-  // var prova = moment('2018-01-01');
-  // console.log(prova);
-
-  var dataMeseCorrente = moment({
-    days: 01,
-    month: 00,
-    years: 2018
+  // evento click su prev
+  $('#prev').click(function() {
+      // quando clicco prendo questo dato...
+      var dataCurrentMonth = $('h3').attr('data-current-month');
+      // ... e lo trasformo in un oggetto moment
+      var dataMonthMoment = moment(dataCurrentMonth);
+      // ci sommo un mese e lo aggiungo alla funzione getMonth per ottenere
+      // ... il mese successivo
+      var mesePrecendente = dataMonthMoment.subtract(1, 'months');
+      // chiamo la funzione per scorrere i mesi e la funzione per evidenziare le festività
+      getMonth(mesePrecendente);
+      getHoliday(mesePrecendente);
   });
 
-  generaMese(dataMeseCorrente);
-  festivita(dataMeseCorrente);
-  console.log(dataMeseCorrente);
+  // evento click su next
+  $('#next').click(function() {
+      // quando clicco prendo questo dato...
+      var dataCurrentMonth = $('h3').attr('data-current-month');
+      // ... e lo trasformo in un oggetto moment
+      var dataMonthMoment = moment(dataCurrentMonth);
+      // ci sommo un mese e lo aggiungo alla funzione getMonth per ottenere
+      // ... il mese successivo
+      var meseSuccessivo = dataMonthMoment.add(1, 'months');
+      // chiamo la funzione per scorrere i mesi e la funzione per evidenziare le festività
+      getMonth(meseSuccessivo);
+      getHoliday(meseSuccessivo);
+  });
 
-
+  getMonth(baseDate);
+  getHoliday(baseDate);
 }); // end document ready
 
-function generaMese(giornoDaImmettere) {
+// funzione che riceve un oggetto moment e stampa il mese
+function getMonth(baseDate) {
 
-  $('#lista-giorni').html('');
-  $('#mese-corrente').html('');
+  if(baseDate.year() === 2018) {
 
+  // ripristino a zero il mese, altrimenti mi appenderà le stringhe invece che sostituire tutto
+  $('#ul').html('');
 
-  // inizializziamo una variabile in cui cambiamo il formato 
-  var nomeMese = giornoDaImmettere.format('MMMM YYYY');
+  var mese = baseDate.format('MMMM YYYY');
+  // scrivo il mese nell'h3 con text...
+  $('h3').text(mese);
+  // ... e salvo il mese in un attributo in un formato che mi sarà comodo successivamente
+  $('h3').attr('data-current-month', baseDate.format('YYYY-MM-DD'));
 
-  // Handlebars
-  var htmlTemplate = $('#mese-template').html();
-  var template = Handlebars.compile(htmlTemplate);
+  // faccio un ciclo for per stampare i giorni del mese
+  // prima uso la funzione days in month per avere sempre il numero giusto di 
+  // giorni da ciclare
+  var numeroGiorniInMese = baseDate.daysInMonth();
+  var source = $("#template").html();
+  var template = Handlebars.compile(source);
 
-  var context = {
-    month: nomeMese
-  };
+  for(var i=1; i <= numeroGiorniInMese; i++) {
 
-  $('#mese-corrente').append(template(context));
-
-  $('#mese-corrente').attr('data-mese-corrente', giornoDaImmettere.format('YYYY-MM-DD'));
-
-
-
-  htmlTemplate = $('#giorni-template').html();
-  template = Handlebars.compile(htmlTemplate);
-
-  // calcolo il numero di giorni per ogni mese
-  var giorniMeseCorrente = giornoDaImmettere.daysInMonth();
-
-  // ciclo for
-  for (var i = 0; i < giorniMeseCorrente; i++) {
-
-    var giornoCorrente = moment(giornoDaImmettere);
-
-    giornoCorrente.add(i, 'days');
-
-    var giornoNumeroMese = giornoCorrente.format('D');
-    var dataCompleta = giornoCorrente.format('YYYY-MM-DD');
-    var mese = giornoCorrente.format('MMMM');
-
-    context = {
-      date: giornoNumeroMese,
-      name: mese,
-      data_completa: dataCompleta
-    };
-
-    $('#lista-giorni').append(template(context));
-
-
-  }
-
-} // fine funzione generaMese
-
-
-
-function festivita(feste) {
-
-  // chiamata ajax
-  $.ajax({
-
-    // url api
-    url: "https://flynn.boolean.careers/exercises/api/holidays?year=2018&month=0",
-    method: "GET",
-
-    data: {
-      year: feste.year(),
-      month: feste.month()
-    },
-
-    success: function (data) {
-
-      console.log(data.response);
-
-      if (data.success === true) {
-
-        var vacanze = data.response;
-
-        for (var i = 0; i < vacanze.length; i++) {
-
-          var vacanzaCorrente = vacanze[i];
-
-          var thisDataElem = $('[data-date = " ' + vacanzaCorrente.date + ' "]');
-
-          thisDataElem.addClass('red');
-
-          thisDataElem.append(' - ' + vacanzaCorrente.name);
-        }
-      }
-
-    },
-
-    error: function () {
-      alert('qualcosa non va');
-    }
-  });
-
-
+      // reimposto un oggetto moment iniziale per poterlo iterare 
+      // modificando il giorno e passandolo in un oggetto in modo
+      // da stamparlo con handlebars
+      // setup Handlebars
+      
+      var giornoIniziale = moment({
+              day: i,
+              month: baseDate.month(),
+              year: baseDate.year()
+          });
+      
+      var context = {
+              day : giornoIniziale.format('D MMMM'),
+              // passo a tutti gli <li> un attributo
+              data : giornoIniziale.format('YYYY-MM-DD')
+          }
+      // console.log(context);
+      var html = template(context);
+      // console.log(html);
+      $('#ul').append(html);
+  }      
+  } else {
+      alert('non ci sono dati disponibili per la data selezionata!');
+  }  
 }
+
+// funzione che trova la festività e colora di rosso l'li
+// ed appende la festività, nel calendario
+
+function getHoliday(baseDate) {
+
+  $.ajax({
+      url : 'https://flynn.boolean.careers/exercises/api/holidays',
+      method : 'GET',
+      data : {
+          month : baseDate.month(),
+          year : baseDate.year()
+      },
+      // successo chiamata ajax
+      success : function(getArrayData) {
+
+          var data = getArrayData.response
+
+          for(var i=0; i < data.length; i++) {
+              var singleData = data[i];
+              // trovo le festività  
+              var holidayName = singleData.name;
+              var holidayDate = singleData.date;
+              
+              // faccio un ciclo su tutti gli li con classe day
+              $('.day').each(function() {
+              // se trovo un li con attributo uguale a holidayDate...scrivo nella console ok
+              var daTrovare = $(this).attr('data');
+
+              if(daTrovare === holidayDate) {
+                  $(this).addClass('holiday');
+                  $(this).append(' - ' + holidayName);
+              }
+          });
+          }   
+      },
+
+      // errore chiamata ajax
+      error : function() {
+          alert('qualcosa non va!')
+      }
+  })
+}
+
+
+

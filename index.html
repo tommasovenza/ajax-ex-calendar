@@ -1,63 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <!-- handlebars -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.js"></script>
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Moment js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha512-zT3zHcFYbQwjHdKjCu6OMmETx8fJA9S7E6W7kBeFxultf75OPTYUJigEKX58qgyQMi1m1EgenfjMXlRZG8BXaw==" crossorigin="anonymous"></script>
+    <!-- moment -->
     <script src="https://momentjs.com/downloads/moment.js"></script>
-    <title>Calendar</title>
+    <title>Moment</title>
 </head>
-
 <body>
 
-  <!-- template clonato -->
-  <div class="container">
+    <div class="container">
+        <h1 class="holiday">Calendarione</h1>
 
-      <div class="prev">
-        <-- prev
-      </div>
-      
-      <h3 data-mese-corrente="" id="mese-corrente"></h3>
+        <h3 data-current-month=""></h3>
 
-      <div class="next">
-        next -->
-      </div>
+        <div class="anchor">
+            <div class="prev" id="prev">
+                <a href="#">Mese precedente</a>
+            </div>
+    
+            <div class="next" id="next">
+                <a href="#">Mese successivo</a>
+            </div>
+        </div>
 
-      <!-- lista giorni da appendere -->
-      <ul id="lista-giorni">
+        <ul id="ul">
 
-      </ul>
+        </ul>
+    </div>
 
-  </div>
+    <script id="template" type="text/x-handlebars-template">
+        <li class="day" data="{{ data }}">{{ day }}</li>
+    </script>
 
-
-
-  <script id="mese-template" type="text/x-handlebars-template">
-
-    <h3> {{ month }} </h3>
-
-  </script>
-
-  <!-- template da clonare -->
-  <script id="giorni-template" type="text/x-handlebars-template">
-
-        <!-- template che si va riprodurre  -->
-        <!-- attributo da verificare per le festività -  "data completa" avrà formato uguale ad APIboolean -->
-        <li data-date=" {{ data_completa }} "> 
-          <span> {{ date }} </span>
-          <span> {{ name }} </span>  
-        </li>
-  </script> 
-
-    <!-- Javascript -->
     <script src="js/script.js"></script>
 </body>
-
 </html>
